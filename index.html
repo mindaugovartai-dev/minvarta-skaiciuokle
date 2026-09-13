@@ -202,7 +202,8 @@
                 <input id="leadEmail" name="El. paštas" type="email" autocomplete="email" required placeholder="vardas@pastas.lt">
               </label>
               <label class="wide">Pastaba
-                <textarea id="leadNote" name="Pastaba" placeholder="Papildoma informacija (nebūtina)"></textarea>
+                <textarea id="leadNote" name="Pastaba" placeholder="Pvz., senų vartų išmontavimas 100 €" aria-describedby="notePriceHint"></textarea>
+                <span id="notePriceHint" class="hint" style="display:block">Kainos su € arba eur pridedamos prie bendros sumos. Jei nurodysite kelias kainas, jos bus sudėtos.</span>
               </label>
             </div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><input id="leadHoney" type="text" tabindex="-1" autocomplete="off"></div>
@@ -293,6 +294,16 @@
       if(!t) return 'RAL neįvestas';
       if(!t.startsWith('RAL')) t='RAL '+t;
       return t;
+    }
+
+    function notePrice(){
+      const amounts=e.leadNote.value.matchAll(/(?<![\p{L}\d.,+−-])([+−-]?\d+(?:[ \u00a0\u202f]\d{3})*(?:[.,]\d{1,2})?)\s*(?:€|eur\b)/giu);
+      let cents=0;
+      for(const match of amounts){
+        const amount=parse(match[1]);
+        if(amount!==null && amount>0) cents+=Math.round(amount*100);
+      }
+      return cents/100;
     }
 
     function calculate(){
@@ -402,6 +413,9 @@
       const c=Math.max(0,num(e.cable,0));
       if(c){ total+=c*15; rows.push([`Laidų instaliacija ${String(c).replace('.',',')} m`,c*15]); }
 
+      const noteCost=notePrice();
+      if(noteCost){ total+=noteCost; rows.push(['Papildomai pagal pastabą',noteCost]); }
+
       e.grandTotal.textContent=eur(total);
       e.breakdown.innerHTML = rows.length
         ? rows.map(r=>`<div class="line"><span>${r[0]}</span><b>${eur(r[1])}</b></div>`).join('')
@@ -482,6 +496,9 @@
         payload.Papildomi_pulteliai=`${remotes} vnt.${price ? ' · '+price : ''}`;
       }
 
+      const noteCost=rowPrice('Papildomai pagal pastabą');
+      if(noteCost) payload.Papildomai_pagal_pastaba=noteCost;
+
       payload.Bendra_preliminari_kaina=eur(state.total);
       return {state,payload};
     }
@@ -533,7 +550,7 @@
       }
     });
 
-    root.querySelectorAll('input,select').forEach(el=>{
+    root.querySelectorAll('input,select,textarea').forEach(el=>{
       const ev=(el.type==='checkbox'||el.tagName==='SELECT')?'change':'input';
       el.addEventListener(ev,calculate);
     });
