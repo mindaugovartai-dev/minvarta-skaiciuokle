@@ -165,9 +165,13 @@
           <h2>Papildomi darbai ir medžiagos</h2>
           <label id="foundationRow" class="check"><input id="foundation" type="checkbox"><span>Vartų pamatas – <b>350 €</b></span></label>
           <div class="row" style="margin-top:10px">
+            <label>60×40 mm stulpai, vnt.
+              <input id="posts60" type="text" inputmode="numeric" value="0" autocomplete="off">
+              <span class="hint" style="display:block">45 €/vnt. su betonavimo darbais.</span>
+            </label>
             <label>100×100 mm stulpai, vnt.
               <input id="posts" type="text" inputmode="numeric" value="0" autocomplete="off">
-              <span class="hint" style="display:block">140 €/vnt.</span>
+              <span class="hint" style="display:block">140 €/vnt. su betonavimo darbais.</span>
             </label>
             <label>Laidų instaliacija, m
               <input id="cable" type="text" inputmode="decimal" value="0" autocomplete="off">
@@ -231,7 +235,7 @@
       gateFillInfo:$('#gateFillInfo'), gateError:$('#gateError'), verticalGateNote:$('#verticalGateNote'),
       wicketWidth:$('#wicketWidth'), wicketHeight:$('#wicketHeight'), wicketFill:$('#wicketFill'),
       wicketFillInfo:$('#wicketFillInfo'), wicketError:$('#wicketError'),
-      foundation:$('#foundation'), foundationRow:$('#foundationRow'), posts:$('#posts'),
+      foundation:$('#foundation'), foundationRow:$('#foundationRow'), posts:$('#posts'), posts60:$('#posts60'),
       cable:$('#cable'), extraRemotes:$('#extraRemotes'), remoteRow:$('#remoteRow'),
       grandTotal:$('#grandTotal'), summaryMeta:$('#summaryMeta'), breakdown:$('#breakdown'),
       leadForm:$('#leadForm'), leadName:$('#leadName'), leadPhone:$('#leadPhone'), leadEmail:$('#leadEmail'),
@@ -388,8 +392,11 @@
 
       if(e.foundation.checked&&ng){ total+=350; rows.push(['Vartų pamatas',350]); }
 
+      const p60=Math.max(0,Math.floor(num(e.posts60,0)));
+      if(p60){ total+=p60*45; rows.push([`60×40 mm stulpai su betonavimu × ${p60}`,p60*45]); }
+
       const p=Math.max(0,Math.floor(num(e.posts,0)));
-      if(p){ total+=p*140; rows.push([`100×100 mm stulpai × ${p}`,p*140]); }
+      if(p){ total+=p*140; rows.push([`100×100 mm stulpai su betonavimu × ${p}`,p*140]); }
 
       const c=Math.max(0,num(e.cable,0));
       if(c){ total+=c*15; rows.push([`Laidų instaliacija ${String(c).replace('.',',')} m`,c*15]); }
@@ -450,10 +457,16 @@
         payload.Vartu_pamatas=price || 'Taip';
       }
 
+      const posts60=Math.max(0,Math.floor(num(e.posts60,0)));
+      if(posts60){
+        const price=rowPrice('60×40 mm stulpai');
+        payload.Stulpai_60x40=`${posts60} vnt. su betonavimu${price ? ' · '+price : ''}`;
+      }
+
       const posts=Math.max(0,Math.floor(num(e.posts,0)));
       if(posts){
         const price=rowPrice('100×100 mm stulpai');
-        payload.Stulpai_100x100=`${posts} vnt.${price ? ' · '+price : ''}`;
+        payload.Stulpai_100x100=`${posts} vnt. su betonavimu${price ? ' · '+price : ''}`;
       }
 
       const cable=Math.max(0,num(e.cable,0));
