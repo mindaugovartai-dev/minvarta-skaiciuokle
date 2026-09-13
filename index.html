@@ -7,77 +7,61 @@
   <meta name="application-name" content="MINVARTA">
   <meta name="apple-mobile-web-app-title" content="MINVARTA">
   <style>
-    :root{
-      --bg:#f6f7f9; --card:#ffffff; --text:#1b1f24; --muted:#6b7280;
-      --border:#d9dee5; --accent:#111827; --accent-soft:#eef1f4; --ok:#166534;
-    }
+    :root{--bg:#eef0ef;--card:#fff;--text:#292f33;--muted:#626c71;--border:#d5dbdd;--accent:#30393e;--accent-soft:#f0f3f2;--ok:#166534}
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1080px;margin:0 auto;padding:18px}
-    .head{margin-bottom:16px}
-    h1{font-size:28px;line-height:1.1;margin:0 0 6px}
-    .sub{color:var(--muted);margin:0}
-    .grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
-    .stack{display:grid;gap:14px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
-    .card h2{font-size:18px;margin:0 0 12px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    label{display:block;font-size:14px;font-weight:600}
-    input[type="text"], input[type="email"], select{
-      width:100%;margin-top:6px;border:1px solid var(--border);border-radius:12px;
-      padding:12px 13px;font-size:16px;background:#fff;color:var(--text);outline:none;
-    }
-    input[type="text"]:focus,input[type="email"]:focus,select:focus{
-      border-color:#7c8794;box-shadow:0 0 0 3px rgba(17,24,39,.08)
-    }
-    .check{display:flex;gap:10px;align-items:flex-start;min-height:42px;font-weight:500}
-    .check input{margin-top:3px;width:19px;height:19px}
-    .hint{font-size:12px;color:var(--muted);margin:8px 0 0}
-    .note{background:var(--accent-soft);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:10px}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+    .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 64px}
+    .head{position:relative;overflow:hidden;background:#30393e;color:#fff;padding:36px 40px;margin-bottom:28px;border-radius:18px}
+    .head:after{content:'';position:absolute;right:0;top:0;bottom:0;width:22%;background:repeating-linear-gradient(90deg,transparent 0 14px,#ffffff06 14px 18px);pointer-events:none}
+    .brand{position:relative;z-index:1;display:block;font-size:13px;font-weight:800;letter-spacing:.25em;color:#c4d0d3;margin-bottom:18px}
+    h1{position:relative;z-index:1;max-width:750px;font-size:clamp(27px,3.2vw,38px);font-weight:650;letter-spacing:-.035em;line-height:1.18;margin:0 0 16px}
+    .sub{position:relative;z-index:1;color:#ced5d8;margin:0;max-width:650px;font-size:14px}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:24px;align-items:start}
+    .stack{display:grid;gap:20px;min-width:0}
+    .card{background:var(--card);border:1px solid #dde2e2;border-radius:16px;padding:26px}
+    .card h2{font-size:20px;font-weight:650;letter-spacing:-.025em;margin:0 0 18px}
+    .row,.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    label{display:block;font-size:14px;font-weight:600;min-width:0}
+    input[type="text"],input[type="email"],select,textarea{width:100%;margin-top:8px;border:1px solid var(--border);border-radius:9px;padding:12px 14px;font:inherit;font-size:16px;background:#fafbfb;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}
+    input[type="text"]:focus,input[type="email"]:focus,select:focus,textarea:focus{border-color:#566c76;box-shadow:0 0 0 3px #536b761f;background:#fff}
+    textarea{min-height:110px;resize:vertical}
+    input::placeholder,textarea::placeholder{color:#7a8388}
+    .check{display:flex;gap:13px;align-items:center;min-height:54px;font-weight:400;padding:13px 15px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;cursor:pointer;background:#fff;transition:background .15s,border-color .15s}
+    .check:has(input:checked){background:#eef2f1;border-color:#81928f}
+    .check:hover{border-color:#687b80}
+    .check input{margin:0;width:20px;height:20px;flex:0 0 20px;accent-color:#36464b;cursor:pointer}
+    .check:focus-within{outline:2px solid #566c76;outline-offset:3px}
+    .check b{font-weight:650}
+    .hint{font-size:12px;line-height:1.6;color:var(--muted);margin:8px 0 0;font-weight:400}
+    .note{background:var(--accent-soft);border-left:3px solid #748985;border-radius:0 8px 8px 0;padding:13px 15px;font-size:13px;margin-top:16px;color:#47545a}
     .hidden{display:none!important}
-    .summary{position:sticky;top:12px}
-    .total-label{font-size:13px;color:var(--muted)}
-    .total{font-size:34px;font-weight:800;margin:2px 0 8px}
-    .meta{font-size:14px;font-weight:700;margin-bottom:10px}
-    .line{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:14px}
-    .line span:first-child{min-width:0}
-    .line b{white-space:nowrap}
-    .divider{border-top:1px solid var(--border);margin:12px 0}
-    .foot{font-size:12px;color:var(--muted)}
+    .summary{position:sticky;top:24px;background:#30393e;border-color:#30393e;color:#fff;padding:28px;box-shadow:0 12px 30px #25303612}
+    .total-label{font-size:12px;color:#c9d2d5;letter-spacing:.1em;text-transform:uppercase}
+    .total{font-size:clamp(30px,3vw,40px);font-weight:650;letter-spacing:-.045em;line-height:1.25;margin:12px 0 20px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+    .meta{font-size:12px;font-weight:500;margin-bottom:18px;color:#d3dcdf;padding:9px 12px;background:#ffffff0a;border-radius:6px}
+    .line{display:flex;justify-content:space-between;gap:16px;padding:11px 0;font-size:13px;border-top:1px solid #ffffff16;color:#dae0e2}
+    .line span:first-child{min-width:0;overflow-wrap:anywhere}
+    .line b{white-space:nowrap;font-weight:600;color:#fff;font-variant-numeric:tabular-nums}
+    .divider{border-top:1px solid #ffffff29;margin:18px 0}
+    .foot{font-size:12px;line-height:1.6;color:#c2ccd0}
     .error{font-size:13px;color:#b91c1c;margin-top:8px}
-    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .contact-grid .wide{grid-column:1/-1}
-    textarea{
-      width:100%;margin-top:6px;border:1px solid var(--border);border-radius:12px;
-      padding:12px 13px;font-size:16px;background:#fff;color:var(--text);outline:none;
-      min-height:92px;resize:vertical;font-family:inherit
-    }
-    textarea:focus{border-color:#7c8794;box-shadow:0 0 0 3px rgba(17,24,39,.08)}
-    .send-btn{
-      width:100%;border:0;border-radius:12px;padding:13px 16px;font-size:16px;
-      font-weight:800;background:var(--accent);color:#fff;cursor:pointer
-    }
+    .send-btn{width:100%;border:0;border-radius:9px;padding:16px 20px;font:inherit;font-size:15px;font-weight:650;background:var(--accent);color:#fff;cursor:pointer;transition:background .15s}
+    .send-btn:hover{background:#46565e}
+    .send-btn:focus-visible{outline:3px solid #7a929e;outline-offset:3px}
     .send-btn:disabled{opacity:.6;cursor:wait}
-    .form-status{margin-top:10px;font-size:14px;font-weight:700}
-    .form-status.ok{color:#166534}
-    .form-status.err{color:#b91c1c}
-    @media(max-width:800px){
-      .grid{grid-template-columns:1fr}
-      .summary{position:static;order:-1}
-    }
-    @media(max-width:560px){
-      .wrap{padding:12px}
-      .row{grid-template-columns:1fr}
-      .contact-grid{grid-template-columns:1fr}
-      .contact-grid .wide{grid-column:auto}
-      h1{font-size:24px}
-      .total{font-size:30px}
-    }
+    .form-status{margin-top:10px;font-size:14px;font-weight:600}
+    .form-status.ok{color:#166534}.form-status.err{color:#b91c1c}
+    @media(max-width:850px){.grid{grid-template-columns:1fr}.summary{position:static;order:-1}.head{padding:28px}.wrap{padding:20px 18px 40px}.total{font-size:36px}}
+    @media(max-width:560px){.wrap{padding:12px 12px 32px}.head{padding:25px 22px;margin-bottom:16px;border-radius:12px}.brand{margin-bottom:14px}.head:after{width:16%}.card{padding:20px;border-radius:12px}.grid,.stack{gap:16px}.row,.contact-grid{grid-template-columns:1fr;gap:14px}.contact-grid .wide{grid-column:auto}.check{padding:12px;font-size:13px}.summary{padding:22px}.total{font-size:34px}.card h2{font-size:19px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
   </style>
 </head>
 <body>
   <main class="wrap" id="app">
     <div class="head">
+      <span class="brand">MINVARTA</span>
       <h1>Vartų kainos ir paslaugų skaičiuoklė</h1>
       <p class="sub">Įveskite matmenis ir pasirinkite komplektaciją. Kaina persiskaičiuoja automatiškai.</p>
     </div>
@@ -202,8 +186,7 @@
                 <input id="leadEmail" name="El. paštas" type="email" autocomplete="email" required placeholder="vardas@pastas.lt">
               </label>
               <label class="wide">Pastaba
-                <textarea id="leadNote" name="Pastaba" aria-describedby="notePriceHint"></textarea>
-                <span id="notePriceHint" class="hint" style="display:block">Kainos su € arba eur pridedamos prie bendros sumos. Jei nurodysite kelias kainas, jos bus sudėtos.</span>
+                <textarea id="leadNote" name="Pastaba"></textarea>
               </label>
             </div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><input id="leadHoney" type="text" tabindex="-1" autocomplete="off"></div>
