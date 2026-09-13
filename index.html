@@ -291,6 +291,9 @@
     }
 
     function calculate(){
+      [e.gateHeight,e.wicketHeight].forEach(el=>{
+        if(parse(el.value)>1800) el.value='1800';
+      });
       const ng=e.needGate.checked, nw=e.needWicket.checked, na=e.needAuto.checked;
       const hasColorProduct = ng || nw;
 
