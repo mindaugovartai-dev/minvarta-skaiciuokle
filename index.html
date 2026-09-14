@@ -186,6 +186,9 @@
               <label class="wide">El. paštas *
                 <input id="leadEmail" name="El. paštas" type="email" autocomplete="email" required placeholder="vardas@pastas.lt">
               </label>
+              <label class="wide">Objekto adresas *
+                <input id="leadAddress" name="Objekto adresas" type="text" autocomplete="street-address" required pattern=".*\S.*" title="Įveskite objekto adresą." placeholder="Gatvė, namo numeris, miestas">
+              </label>
               <label class="wide">Pastaba
                 <textarea id="leadNote" name="Pastaba"></textarea>
               </label>
@@ -193,7 +196,7 @@
             <div style="position:absolute;left:-9999px" aria-hidden="true"><input id="leadHoney" type="text" tabindex="-1" autocomplete="off"></div>
             <button id="sendLead" class="send-btn" type="submit" style="margin-top:14px">Siųsti užklausą</button>
             <div id="formStatus" class="form-status" aria-live="polite"></div>
-            <p class="hint">Paspaudus „Siųsti užklausą“, „Minvarta“ gaus jūsų kontaktus ir visą skaičiuoklės suvestinę.</p>
+            <p class="hint">Paspaudus „Siųsti užklausą“, „Minvarta“ gaus jūsų kontaktus, objekto adresą ir visą skaičiuoklės suvestinę.</p>
           </form>
         </section>
       </div>
@@ -225,7 +228,7 @@
       cable:$('#cable'), extraRemotes:$('#extraRemotes'), remoteRow:$('#remoteRow'),
       grandTotal:$('#grandTotal'), summaryMeta:$('#summaryMeta'), breakdown:$('#breakdown'),
       leadForm:$('#leadForm'), leadName:$('#leadName'), leadPhone:$('#leadPhone'), leadEmail:$('#leadEmail'),
-      leadNote:$('#leadNote'), leadHoney:$('#leadHoney'), sendLead:$('#sendLead'), formStatus:$('#formStatus')
+      leadAddress:$('#leadAddress'), leadNote:$('#leadNote'), leadHoney:$('#leadHoney'), sendLead:$('#sendLead'), formStatus:$('#formStatus')
     };
 
     const eur = n => new Intl.NumberFormat('lt-LT',{
@@ -490,10 +493,16 @@
       return {state,payload};
     }
 
+    e.leadAddress.addEventListener('input', ()=>{
+      e.leadAddress.setCustomValidity('');
+    });
+
     e.leadForm.addEventListener('submit', async ev=>{
       ev.preventDefault();
       e.formStatus.textContent='';
       e.formStatus.className='form-status';
+      e.leadAddress.value=e.leadAddress.value.trim();
+      e.leadAddress.setCustomValidity(e.leadAddress.value ? '' : 'Įveskite objekto adresą.');
       if(!e.leadForm.reportValidity()) return;
       if(e.leadHoney.value) return;
 
@@ -507,6 +516,7 @@
           _template:'table',
           Vardas:e.leadName.value.trim(),
           Telefonas:e.leadPhone.value.trim(),
+          'Objekto adresas':e.leadAddress.value.trim(),
           email:e.leadEmail.value.trim(),
           _replyto:e.leadEmail.value.trim(),
           ...payload
