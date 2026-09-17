@@ -69,6 +69,21 @@
     .form-status.ok{color:#166534}.form-status.err{color:#b91c1c}
     @media(max-width:850px){.grid{grid-template-columns:1fr}.summary{position:static;order:-1}.head{padding:28px}.wrap{padding:20px 18px 40px}.total{font-size:36px}}
     @media(max-width:560px){.wrap{padding:12px 12px 32px}.head{padding:25px 22px;margin-bottom:16px;border-radius:12px}.brand{margin-bottom:14px}.head:after{width:16%}.card{padding:20px;border-radius:12px}.grid,.stack{gap:16px}.row,.contact-grid{grid-template-columns:1fr;gap:14px}.contact-grid .wide{grid-column:auto}.check{padding:12px;font-size:13px}.summary{padding:22px}.total{font-size:34px}.card h2{font-size:19px}}
+
+    .extras-intro{margin:-8px 0 18px}
+    .extras-groups{display:grid;gap:16px}
+    .extras-group{min-width:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+    .extras-group h3{margin:0;padding:13px 16px;background:var(--accent-soft);font-size:15px;font-weight:650;letter-spacing:-.015em}
+    .extra-item{padding:15px 16px;border-top:1px solid #e5e9e8}
+    .extra-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:14px;font-weight:600}
+    .extra-price{flex-shrink:0;white-space:nowrap;font-size:14px;font-weight:650;font-variant-numeric:tabular-nums}
+    .extras-group .check{margin:0;border:0;border-top:1px solid #e5e9e8;border-radius:0;padding:15px 16px;min-height:60px}
+    .extras-group .check .extra-heading{flex:1;min-width:0}
+    .extras-group .check:focus-within{outline-offset:-3px}
+    .extra-quantity{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:10px;font-weight:400;color:var(--muted);font-size:13px}
+    .extra-quantity input{width:96px;min-height:44px;margin:0;padding:9px 12px;text-align:right}
+    .extra-item:has(input:not(:placeholder-shown):focus){background:#fafbfb}
+    @media(max-width:560px){.extra-item,.extras-group .check{padding:13px 12px}.extras-group h3{padding:12px}.extra-heading,.extra-price{font-size:13px}.extra-heading{gap:8px}.extras-group .check{gap:10px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
   </style>
 </head>
@@ -161,29 +176,41 @@
           <div id="wicketFillInfo" class="hint"></div>
         </section>
 
-        <section class="card">
-          <h2>Papildomi darbai ir medžiagos</h2>
-          <label class="check"><input id="wifiController" type="checkbox"><span>Wi‑Fi vartų valdiklis – <b>60 €</b></span></label>
-          <label id="foundationRow" class="check"><input id="foundation" type="checkbox"><span>Vartų pamatas – <b>350 €</b></span></label>
-          <div class="row" style="margin-top:10px">
-            <label>60×40 mm stulpai, vnt.
-              <input id="posts60" type="text" inputmode="numeric" value="0" autocomplete="off">
-              <span class="hint" style="display:block">45 €/vnt. su betonavimo darbais.</span>
-            </label>
-            <label>100×100 mm stulpai, vnt.
-              <input id="posts" type="text" inputmode="numeric" value="0" autocomplete="off">
-              <span class="hint" style="display:block">140 €/vnt. su betonavimo darbais.</span>
-            </label>
-            <label>Laidų instaliacija, m
-              <input id="cable" type="text" inputmode="decimal" value="0" autocomplete="off">
-              <span class="hint" style="display:block">15 €/m</span>
-            </label>
-          </div>
-          <div id="remoteRow" style="margin-top:10px">
-            <label>Papildomi pulteliai, vnt.
-              <input id="extraRemotes" type="text" inputmode="numeric" value="0" autocomplete="off">
-              <span class="hint" style="display:block">2 pulteliai jau įeina į automatikos komplektą. Papildomas – 30 € su programavimu.</span>
-            </label>
+        <section class="card" id="extrasSection" aria-labelledby="extrasTitle">
+          <h2 id="extrasTitle">Papildomi darbai ir medžiagos</h2>
+          <p class="hint extras-intro">Pažymėkite priedą arba įveskite kiekį. Jei nereikia, palikite 0.</p>
+          <div class="extras-groups">
+            <section class="extras-group" aria-labelledby="automationExtrasTitle">
+              <h3 id="automationExtrasTitle">Automatikos priedai</h3>
+              <label class="check"><input id="wifiController" type="checkbox"><span class="extra-heading"><span>Wi‑Fi vartų valdiklis</span><span class="extra-price">60 €</span></span></label>
+              <div id="remoteRow" class="extra-item">
+                <div class="extra-heading"><label for="extraRemotes">Papildomas pultelis</label><span class="extra-price">30 €/vnt.</span></div>
+                <p class="hint" id="extraRemotesHint">Su programavimu. 2 pulteliai jau įeina į automatikos komplektą.</p>
+                <div class="extra-quantity"><label for="extraRemotes">Kiekis, vnt.</label><input id="extraRemotes" type="text" inputmode="numeric" value="0" autocomplete="off" aria-describedby="extraRemotesHint"></div>
+              </div>
+            </section>
+            <section class="extras-group" aria-labelledby="installationExtrasTitle">
+              <h3 id="installationExtrasTitle">Montavimo darbai</h3>
+              <label id="foundationRow" class="check"><input id="foundation" type="checkbox"><span class="extra-heading"><span>Vartų pamatas</span><span class="extra-price">350 €</span></span></label>
+              <div class="extra-item">
+                <div class="extra-heading"><label for="cable">Kabelio įrengimas</label><span class="extra-price">15 €/m</span></div>
+
+                <div class="extra-quantity"><label for="cable">Ilgis, m</label><input id="cable" type="text" inputmode="decimal" value="0" autocomplete="off"></div>
+              </div>
+            </section>
+            <section class="extras-group" aria-labelledby="constructionExtrasTitle">
+              <h3 id="constructionExtrasTitle">Konstrukcijos priedai</h3>
+              <div class="extra-item">
+                <div class="extra-heading"><label for="posts">100×100 mm stulpas</label><span class="extra-price">140 €/vnt.</span></div>
+                <p class="hint" id="postsHint">Su betonavimo darbais.</p>
+                <div class="extra-quantity"><label for="posts">Kiekis, vnt.</label><input id="posts" type="text" inputmode="numeric" value="0" autocomplete="off" aria-describedby="postsHint"></div>
+              </div>
+              <div class="extra-item">
+                <div class="extra-heading"><label for="posts60">60×40 mm stulpas</label><span class="extra-price">45 €/vnt.</span></div>
+                <p class="hint" id="posts60Hint">Su betonavimo darbais.</p>
+                <div class="extra-quantity"><label for="posts60">Kiekis, vnt.</label><input id="posts60" type="text" inputmode="numeric" value="0" autocomplete="off" aria-describedby="posts60Hint"></div>
+              </div>
+            </section>
           </div>
         </section>
 
@@ -419,7 +446,7 @@
       if(p){ total+=p*140; rows.push([`100×100 mm stulpai su betonavimu × ${p}`,p*140]); }
 
       const c=Math.max(0,num(e.cable,0));
-      if(c){ total+=c*15; rows.push([`Laidų instaliacija ${String(c).replace('.',',')} m`,c*15]); }
+      if(c){ total+=c*15; rows.push([`Kabelio įrengimas ${String(c).replace('.',',')} m`,c*15]); }
 
       const noteCost=notePrice();
       if(noteCost){ total+=noteCost; rows.push(['Papildomai pagal pastabą',noteCost]); }
@@ -498,7 +525,7 @@
 
       const cable=Math.max(0,num(e.cable,0));
       if(cable){
-        const price=rowPrice('Laidų instaliacija');
+        const price=rowPrice('Kabelio įrengimas');
         payload.Laidu_instaliacija=`${String(cable).replace('.',',')} m${price ? ' · '+price : ''}`;
       }
 
