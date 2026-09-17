@@ -6,20 +6,23 @@
   <title>MINVARTA</title>
   <meta name="application-name" content="MINVARTA">
   <meta name="apple-mobile-web-app-title" content="MINVARTA">
-  <!-- Meta Pixel Code -->
   <script>
-    !function(f,b,e,v,n,t,s){
-      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)
-    }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1074361962165626');
-    fbq('track', 'PageView');
+    window.minvartaMarketingAllowed = false;
+    window.enableMinvartaMarketing = function(){
+      window.minvartaMarketingAllowed = true;
+      if(window.fbq){ window.fbq('consent','grant'); return; }
+      !function(f,b,e,v,n,t,s){
+        if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+        s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
+      }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('consent','grant');
+      fbq('init','1074361962165626');
+      fbq('track','PageView');
+    };
   </script>
-  <!-- End Meta Pixel Code -->
   <style>
     :root{--bg:#eef0ef;--card:#fff;--text:#292f33;--muted:#626c71;--border:#d5dbdd;--accent:#30393e;--accent-soft:#f0f3f2;--ok:#166534}
     *{box-sizing:border-box}
@@ -84,6 +87,16 @@
     .extra-quantity input{width:96px;min-height:44px;margin:0;padding:9px 12px;text-align:right}
     .extra-item:has(input:not(:placeholder-shown):focus){background:#fafbfb}
     @media(max-width:560px){.extra-item,.extras-group .check{padding:13px 12px}.extras-group h3{padding:12px}.extra-heading,.extra-price{font-size:13px}.extra-heading{gap:8px}.extras-group .check{gap:10px}}
+    .privacy-note{margin-top:18px;padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--accent-soft);font-size:13px;color:#47545a}
+    .privacy-note p{margin:0 0 10px}.privacy-note p:last-child{margin-bottom:0}
+    .privacy-note summary{cursor:pointer;font-weight:650;min-height:44px;display:list-item;padding:10px 0;color:var(--text)}
+    .privacy-note a,.privacy-settings{color:inherit;text-decoration:underline;text-underline-offset:3px}
+    .privacy-settings{background:none;border:0;padding:12px 0;font:inherit;font-size:13px;cursor:pointer}
+    .cookie-panel{position:fixed;z-index:10;bottom:16px;left:16px;right:16px;max-width:560px;margin:auto;background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 8px 35px #25303633;font-size:13px;max-height:80vh;overflow:auto}
+    .cookie-panel h2{font-size:17px;margin:0 0 8px}.cookie-actions{display:flex;gap:12px;margin-top:14px}
+    .cookie-actions button{flex:1;min-height:44px;padding:10px;border:1px solid var(--accent);border-radius:8px;background:#fff;color:var(--text);font:inherit;font-weight:600;cursor:pointer}
+    .cookie-actions button:hover{background:var(--accent-soft)}
+    .cookie-panel a{color:inherit}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
   </style>
 </head>
@@ -236,6 +249,19 @@
               </label>
             </div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><input id="leadHoney" type="text" tabindex="-1" autocomplete="off"></div>
+            <div class="privacy-note">
+              <p>Pateikdami užklausą prašote MINVARTA susisiekti su jumis ir parengti pasiūlymą pagal nurodytus duomenis.</p>
+              <details id="privacyDetails">
+                <summary>Kaip tvarkome jūsų asmens duomenis</summary>
+                <p><b>Duomenų valdytojas:</b> MB MINVARTA. Klausimais dėl duomenų rašykite <a href="mailto:info@minvarta.lt">info@minvarta.lt</a>.</p>
+                <p><b>Duomenys ir tikslas.</b> Vardą, telefono numerį, el. pašto adresą, objekto adresą, pasirinktą komplektaciją ir jūsų pateiktą pastabą naudojame atsakyti į užklausą ir parengti pasiūlymą. Privalomi laukai pažymėti *. Be jų užklausos per šią formą pateikti negalėsite. Pastaba neprivaloma; joje nerašykite jautrių ar pasiūlymui nereikalingų duomenų.</p>
+                <p><b>Teisinis pagrindas.</b> Veiksmai jūsų prašymu prieš sudarant sutartį (BDAR 6 straipsnio 1 dalies b punktas). Užklausos pateikimas nėra sutikimas gauti reklaminius laiškus.</p>
+                <p><b>Gavėjai.</b> Užklausa perduodama per „FormSubmit“ paslaugą į MINVARTA el. paštą. Duomenis tvarkyti padeda svetainės prieglobos ir el. pašto paslaugų teikėjai. <a href="https://formsubmit.co/privacy.pdf" target="_blank" rel="noopener noreferrer">„FormSubmit“ privatumo informacija</a>.</p>
+                <p><b>Saugojimas.</b> Užklausos, kurios netampa užsakymais, saugomos 1 mėnesį. Jei sudaroma sutartis, užsakymui reikalingi duomenys toliau tvarkomi sutarties vykdymo ir taikomų teisinių prievolių tikslais.</p>
+                <p><b>Jūsų teisės.</b> Galite prašyti susipažinti su duomenimis, juos ištaisyti, ištrinti, apriboti tvarkymą ir, kai taikoma, perkelti duomenis. Kreipkitės į info@minvarta.lt. Taip pat galite pateikti skundą <a href="https://vdai.lrv.lt/" target="_blank" rel="noopener noreferrer">Valstybinei duomenų apsaugos inspekcijai</a>.</p>
+                <p><b>Reklamos slapukai.</b> Tik pasirinkus „Sutinku“ įjungiama „Meta Pixel“ technologija apsilankymams ir užklausos pateikimo įvykiams matuoti. „Meta“ gali gauti techninius įrenginio, naršymo ir slapukų identifikatorių duomenis. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">„Meta“ privatumo politika</a>. Sutikimą galite pakeisti arba atšaukti paspaudę „Slapukų nustatymai“.</p>
+              </details>
+            </div>
             <button id="sendLead" class="send-btn" type="submit" style="margin-top:14px">Siųsti užklausą</button>
             <div id="formStatus" class="form-status" aria-live="polite"></div>
             <p class="hint">Paspaudus „Siųsti užklausą“, „Minvarta“ gaus jūsų kontaktus, objekto adresą ir visą skaičiuoklės suvestinę.</p>
@@ -252,6 +278,14 @@
         <div class="foot">Galutinė kaina patvirtinama įvertinus faktinius matmenis ir montavimo vietą.</div>
       </aside>
     </div>
+    <button class="privacy-settings" id="cookieSettings" type="button">Slapukų nustatymai</button>
+    <section class="cookie-panel hidden" id="cookiePanel" aria-labelledby="cookieTitle">
+      <h2 id="cookieTitle">Reklamos slapukai</h2>
+      <p>Ar leidžiate naudoti „Meta Pixel“ apsilankymams ir užklausų pateikimui matuoti bei reklamos veiksmingumui vertinti? Atsisakius skaičiuoklė ir užklausos forma veiks.</p>
+      <p>Pasirinkimą šiame įrenginyje prisiminsime 6 mėnesius. Jį bet kada galėsite pakeisti per „Slapukų nustatymus“.</p>
+      <a href="#privacyDetails" id="cookieMore">Daugiau apie duomenų tvarkymą</a>
+      <div class="cookie-actions"><button type="button" id="cookieReject">Nesutinku</button><button type="button" id="cookieAccept">Sutinku</button></div>
+    </section>
   </main>
 
   <script>
@@ -582,7 +616,7 @@
 
         const data=await res.json().catch(()=>({}));
         if(!res.ok || data.success===false) throw new Error('submit');
-        if (typeof fbq === 'function') fbq('track', 'Lead');
+        if (window.minvartaMarketingAllowed && typeof fbq === 'function') fbq('track', 'Lead');
 
         e.formStatus.textContent='Ačiū, užklausa išsiųsta. Susisieksime.';
         e.formStatus.className='form-status ok';
@@ -603,6 +637,37 @@
     });
 
     calculate();
+  })();
+  </script>
+  <script>
+  (()=>{
+    const panel=document.getElementById('cookiePanel');
+    const settings=document.getElementById('cookieSettings');
+    const key='minvarta.cookies.v1';
+    const maxAge=180*24*60*60*1000;
+    let saved=null;
+    try { saved=JSON.parse(localStorage.getItem(key)); } catch {}
+    if(saved && ['accepted','rejected'].includes(saved.choice) && Date.now()-saved.at>=0 && Date.now()-saved.at<maxAge){
+      if(saved.choice==='accepted') window.enableMinvartaMarketing();
+    }else{panel.classList.remove('hidden');}
+    function choose(choice){
+      try { localStorage.setItem(key,JSON.stringify({choice,at:Date.now(),version:1})); } catch {}
+      if(choice==='accepted') window.enableMinvartaMarketing();
+      else {
+        window.minvartaMarketingAllowed=false;
+        if(window.fbq) window.fbq('consent','revoke');
+        for(const name of ['_fbp','_fbc']){
+          const parts=location.hostname.split('.');
+          document.cookie=name+'=; Max-Age=0; path=/';
+          for(let i=0;i<parts.length-1;i++)document.cookie=name+'=; Max-Age=0; path=/; domain=.'+parts.slice(i).join('.');
+        }
+      }
+      panel.classList.add('hidden');settings.focus();
+    }
+    document.getElementById('cookieAccept').addEventListener('click',()=>choose('accepted'));
+    document.getElementById('cookieReject').addEventListener('click',()=>choose('rejected'));
+    settings.addEventListener('click',()=>{panel.classList.remove('hidden');document.getElementById('cookieReject').focus();});
+    document.getElementById('cookieMore').addEventListener('click',()=>{document.getElementById('privacyDetails').open=true;panel.classList.add('hidden');document.querySelector('#privacyDetails summary').focus();});
   })();
   </script>
 </body>
