@@ -163,6 +163,7 @@
 
         <section class="card">
           <h2>Papildomi darbai ir medžiagos</h2>
+          <label class="check"><input id="wifiController" type="checkbox"><span>Wi‑Fi vartų valdiklis – <b>60 €</b></span></label>
           <label id="foundationRow" class="check"><input id="foundation" type="checkbox"><span>Vartų pamatas – <b>350 €</b></span></label>
           <div class="row" style="margin-top:10px">
             <label>60×40 mm stulpai, vnt.
@@ -239,6 +240,7 @@
       wicketWidth:$('#wicketWidth'), wicketHeight:$('#wicketHeight'), wicketFill:$('#wicketFill'),
       wicketFillInfo:$('#wicketFillInfo'), wicketError:$('#wicketError'),
       foundation:$('#foundation'), foundationRow:$('#foundationRow'), posts:$('#posts'), posts60:$('#posts60'),
+      wifiController:$('#wifiController'),
       cable:$('#cable'), extraRemotes:$('#extraRemotes'), remoteRow:$('#remoteRow'),
       grandTotal:$('#grandTotal'), summaryMeta:$('#summaryMeta'), breakdown:$('#breakdown'),
       leadForm:$('#leadForm'), leadName:$('#leadName'), leadPhone:$('#leadPhone'), leadEmail:$('#leadEmail'),
@@ -406,6 +408,8 @@
         if(r){ total+=r*30; rows.push([`Papildomi pulteliai × ${r}`,r*30]); }
       }
 
+      if(e.wifiController.checked){ total+=60; rows.push(['Wi‑Fi vartų valdiklis',60]); }
+
       if(e.foundation.checked&&ng){ total+=350; rows.push(['Vartų pamatas',350]); }
 
       const p60=Math.max(0,Math.floor(num(e.posts60,0)));
@@ -469,6 +473,10 @@
       if(e.needAuto.checked){
         const price=rowPrice('Automatika + foto davikliai + 2 pulteliai');
         payload.Automatika=`Foto davikliai + 2 pulteliai${price ? ' · '+price : ''}`;
+      }
+
+      if(e.wifiController.checked){
+        payload['Wi‑Fi vartų valdiklis']=rowPrice('Wi‑Fi vartų valdiklis');
       }
 
       if(e.foundation.checked && e.needGate.checked){
