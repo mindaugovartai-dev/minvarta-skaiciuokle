@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "tvoralentes.minvarta.lt" }],
+      "destination": "/tvoralentes.html"
+    },
+    {
+      "source": "/tvoralentes",
+      "destination": "/tvoralentes.html"
+    }
+  ]
+}
