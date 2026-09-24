@@ -85,7 +85,7 @@ function draw(r,orientation){
     else svg+='<text x="480" y="125" text-anchor="middle" fill="#365345" font-size="18">Daugiau nei 500 lentelių – naudokite montavimo žymas</text>';
     svg+='<text x="40" y="203" fill="#59696d" font-size="14">0 mm</text><text x="920" y="203" text-anchor="end" fill="#59696d" font-size="14">'+fmt(r.L)+' mm</text>';
   }else{
-    const axis=r.openingLength||r.L,scale=150/axis,rect=(p,x,color)=>'<rect x="'+x+'" y="'+(190-(p+r.B)*scale)+'" width="330" height="'+Math.max(2,r.B*scale)+'" rx="2" fill="'+color+'"/>';
+    const axis=r.openingLength||r.L,scale=150/axis,rect=(p,x,color)=>'<rect x="'+x+'" y="'+(40+p*scale)+'" width="330" height="'+Math.max(2,r.B*scale)+'" rx="2" fill="'+color+'"/>';
     svg='<line x1="55" y1="40" x2="55" y2="190" stroke="#81968a"/><path d="M48 40h14M48 190h14" stroke="#81968a"/><text x="25" y="120" transform="rotate(-90 25 120)" text-anchor="middle" fill="#365345" font-size="17">'+fmt(axis)+' mm</text>';
     if(r.bottomGap>0)svg+='<rect x="100" y="'+(190-r.bottomGap*scale)+'" width="795" height="'+(r.bottomGap*scale)+'" fill="#d9c7a3" opacity=".55"/><text x="900" y="'+(185-r.bottomGap*scale/2)+'" text-anchor="end" fill="#725b32" font-size="13">tarpas '+fmt(r.bottomGap)+' mm</text>';
     if(r.total<=500)svg+=r.back.map(x=>rect(x,545,'#acbdb3')).join('')+r.front.map(x=>rect(x,120,'#364c44')).join('');
@@ -102,10 +102,10 @@ function update(){
   $('widthLabel').textContent=vertical?'Lentelės plotis, mm':'Lentelės aukštis, mm';
   $('heightField').hidden=!vertical;
   $('boardLengthMetric').hidden=!vertical;
-  $('marksSummary').textContent=vertical?'Montavimo žymos nuo kairio angos krašto':'Montavimo žymos nuo apatinio angos krašto';
-  $('marksHint').textContent=vertical?'Žyma – lentelės kairysis kraštas. Kiekvieną žymą matuokite nuo to paties nulio. Ekrane apvalinama iki 0,01 mm; skaičiuojama neapvalintais dydžiais.':'Žyma – lentelės apatinis kraštas. Kiekvieną žymą matuokite nuo to paties nulio apačioje. Ekrane apvalinama iki 0,01 mm; skaičiuojama neapvalintais dydžiais.';
+  $('marksSummary').textContent=vertical?'Montavimo žymos nuo kairio angos krašto':'Montavimo žymos nuo viršutinio angos krašto';
+  $('marksHint').textContent=vertical?'Žyma – lentelės kairysis kraštas. Kiekvieną žymą matuokite nuo to paties nulio. Ekrane apvalinama iki 0,01 mm; skaičiuojama neapvalintais dydžiais.':'Žyma – lentelės viršutinis kraštas. Kiekvieną žymą matuokite žemyn nuo to paties nulio viršuje. Ekrane apvalinama iki 0,01 mm; skaičiuojama neapvalintais dydžiais.';
   $('diagramHint').textContent=vertical?'Vaizdas iš viršaus. Eilės atskirtos aiškumui; atstumas tarp tvoros pusių neskaičiuojamas. Persidengimas vertinamas žiūrint statmenai.':'Vaizdas iš priekio. Pusės parodytos greta aiškumui; persidengimas vertinamas žiūrint statmenai.';
-  $('edgeNote').textContent=vertical?'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su kairiu ir dešiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.':bottomMode==='gap'?'Pirma lentelė pradedama virš nurodyto apatinio tarpo, o paskutinė sutampa su viršutiniu angos kraštu. Antroje pusėje lentelės dedamos per tarpų vidurį.':'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su apatiniu ir viršutiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.';
+  $('edgeNote').textContent=vertical?'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su kairiu ir dešiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.':bottomMode==='gap'?'Pirma lentelė pradedama nuo viršutinio angos krašto, o po paskutine lentele paliekamas nurodytas tarpas apačioje. Antroje pusėje lentelės dedamos per tarpų vidurį.':'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su viršutiniu ir apatiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.';
   $('bottomGapField').hidden=bottomMode!=='gap';
   $('bottomGapHint').textContent=vertical?'Tarpas atimamas iš angos aukščio – rezultate matysite reikalingą lentelės ilgį.':'Tarpas atimamas iš dengiamo angos aukščio ir įtraukiamas į montavimo žymas.';
   $('overlapField').hidden=mode!=='auto'||sides!==2;$('gapField').hidden=mode!=='auto'||sides!==1;$('countField').hidden=mode!=='manual';
@@ -119,7 +119,6 @@ function update(){
     if(requestedBottomGap>=openingHeight)throw Error('Tarpas apačioje turi būti mažesnis už angos aukštį.');
     const r=calculateFence({length:vertical?openingLength:openingLength-requestedBottomGap,width:number('width'),sides,mode,targetOverlap:number('targetOverlap'),targetGap:number('targetGap'),count:number('count')});
     r.openingLength=openingLength;r.openingHeight=openingHeight;r.bottomGap=requestedBottomGap;r.boardLength=vertical?openingHeight-requestedBottomGap:null;
-    if(!vertical&&requestedBottomGap>0){r.front=r.front.map(v=>v+requestedBottomGap);r.back=r.back.map(v=>v+requestedBottomGap);}
     current=r;
     $('error').hidden=true;$('drawing').hidden=false;$('copy').disabled=false;$('print').disabled=false;
     $('total').textContent=r.total;$('split').textContent='Pirma pusė: '+r.n+' vnt.'+(sides===2?' · Antra pusė: '+r.backN+' vnt.':'');
@@ -143,7 +142,7 @@ $('reset').addEventListener('click',()=>{for(const [id,v] of Object.entries({len
 $('print').addEventListener('click',()=>{if(current){$('marksDetails').open=true;window.print();}});
 $('copy').addEventListener('click',async()=>{
   if(!current)return;const r=current,orientation=document.querySelector('input[name=orientation]:checked').value,vertical=orientation==='vertical';
-  const text='MINVARTA · Tvoralenčių skaičiavimas\nKryptis: '+(vertical?'vertikalios':'horizontalios')+'\n'+(vertical?'Angos plotis: ':'Angos aukštis: ')+mm(r.openingLength)+'; '+(vertical?'lentelės plotis: ':'lentelės aukštis: ')+mm(r.B)+(vertical?'\nAngos aukštis: '+mm(r.openingHeight)+'; lentelės ilgis: '+mm(r.boardLength):'')+'\nTarpas apačioje: '+mm(r.bottomGap)+'\nPirma pusė: '+r.n+'; antra pusė: '+r.backN+'; iš viso: '+r.total+' vnt.\nŽingsnis: '+mm(r.step)+'; tarpas: '+mm(r.gap)+'\nPoslinkis: '+mm(r.offset)+'; persidengimas: '+mm(r.overlap)+(r.percent===null?'':' ('+fmt(r.percent)+' %)')+'\n'+($('warning').hidden?'':$('warning').textContent+'\n')+(vertical?'Kairiųjų kraštų žymos nuo angos kairio krašto, mm':'Apatinių kraštų žymos nuo angos apatinio krašto, mm')+'\nPirma pusė: '+r.front.map(fmt).join(' / ')+(r.backN?'\nAntra pusė: '+r.back.map(fmt).join(' / '):'');
+  const text='MINVARTA · Tvoralenčių skaičiavimas\nKryptis: '+(vertical?'vertikalios':'horizontalios')+'\n'+(vertical?'Angos plotis: ':'Angos aukštis: ')+mm(r.openingLength)+'; '+(vertical?'lentelės plotis: ':'lentelės aukštis: ')+mm(r.B)+(vertical?'\nAngos aukštis: '+mm(r.openingHeight)+'; lentelės ilgis: '+mm(r.boardLength):'')+'\nTarpas apačioje: '+mm(r.bottomGap)+'\nPirma pusė: '+r.n+'; antra pusė: '+r.backN+'; iš viso: '+r.total+' vnt.\nŽingsnis: '+mm(r.step)+'; tarpas: '+mm(r.gap)+'\nPoslinkis: '+mm(r.offset)+'; persidengimas: '+mm(r.overlap)+(r.percent===null?'':' ('+fmt(r.percent)+' %)')+'\n'+($('warning').hidden?'':$('warning').textContent+'\n')+(vertical?'Kairiųjų kraštų žymos nuo angos kairio krašto, mm':'Viršutinių kraštų žymos nuo angos viršaus, mm')+'\nPirma pusė: '+r.front.map(fmt).join(' / ')+(r.backN?'\nAntra pusė: '+r.back.map(fmt).join(' / '):'');
   try{await navigator.clipboard.writeText(text);$('actionStatus').textContent='Rezultatas ir montavimo žymos nukopijuoti.';}catch{$('actionStatus').textContent='Naršyklė neleido kopijuoti. Išskleiskite montavimo žymas ir nukopijuokite jas rankiniu būdu.';$('marksDetails').open=true;}
 });
 update();
