@@ -43,7 +43,7 @@
 </main>
 <script>
 'use strict';
-function calculateFence({length:L,width:B,sides,mode,targetOverlap,targetGap,count}){
+function calculateFence({length:L,width:B,sides,mode,targetOverlap,targetGap,count,trailingGap=false}){
   if(!Number.isFinite(L)||!Number.isFinite(B)||L<=0||B<=0)throw Error('Įveskite teigiamą angos ir lentelės plotį.');
   if(L>100000||B>10000)throw Error('Angos matmuo gali būti iki 100 000 mm, lentelės – iki 10 000 mm.');
   if(B>L)throw Error('Lentelės matmuo didesnis už angą. Reikia mažesnės arba išilgai pjautos lentelės.');
@@ -56,18 +56,18 @@ function calculateFence({length:L,width:B,sides,mode,targetOverlap,targetGap,cou
     const desired=sides===2?2*B*(1-targetOverlap/100):B+targetGap;
     if(maxN===1)n=1;
     else{
-      const raw=(L-B)/desired+1;
+      const raw=trailingGap?L/desired:(L-B)/desired+1;
       const candidates=[Math.floor(raw),Math.ceil(raw)].map(v=>Math.max(2,Math.min(maxN,v)));
       n=candidates.sort((a,b)=>Math.abs((L-B)/(a-1)-desired)-Math.abs((L-B)/(b-1)-desired)||a-b)[0];
     }
   }
   if(!Number.isInteger(n)||n<1||n>2000)throw Error('Įveskite sveiką lentelių kiekį nuo 1 iki 2 000. Didesnę angą skaičiuokite dalimis.');
   if(n>maxN)throw Error('Tiek lentelių netelpa: tos pačios pusės lentelės persiklotų. Sumažinkite kiekį.');
-  const step=n>1?(L-B)/(n-1):null;
+  const step=trailingGap?L/n:(n>1?(L-B)/(n-1):null);
   const backN=sides===2?n-1:0;
   const offset=backN?step/2:null;
   const overlap=backN?B-offset:null;
-  const front=Array.from({length:n},(_,i)=>n===1?(L-B)/2:i*step);
+  const front=Array.from({length:n},(_,i)=>trailingGap?i*step:(n===1?(L-B)/2:i*step));
   const back=Array.from({length:backN},(_,i)=>offset+i*step);
   return{L,B,n,backN,total:n+backN,step,gap:step===null?null:Math.max(0,step-B),offset,overlap,percent:overlap===null?null:overlap/B*100,front,back};
 }
@@ -97,7 +97,7 @@ function draw(r,orientation){
 function update(){
   const orientation=document.querySelector('input[name=orientation]:checked').value,sides=Number(document.querySelector('input[name=sides]:checked').value),mode=$('mode').value,bottomMode=document.querySelector('input[name=bottomMode]:checked').value;
   const vertical=orientation==='vertical';
-  const requestedBottomGap=bottomMode==='gap'?number('bottomGap'):0;
+  const requestedBottomGap=vertical&&bottomMode==='gap'?number('bottomGap'):0;
   $('lengthLabel').textContent=vertical?'Angos plotis, mm':'Angos aukštis, mm';
   $('widthLabel').textContent=vertical?'Lentelės plotis, mm':'Lentelės aukštis, mm';
   $('heightField').hidden=!vertical;
@@ -105,8 +105,8 @@ function update(){
   $('marksSummary').textContent=vertical?'Montavimo žymos nuo kairio angos krašto':'Montavimo žymos nuo viršutinio angos krašto';
   $('marksHint').textContent=vertical?'Žyma – lentelės kairysis kraštas. Kiekvieną žymą matuokite nuo to paties nulio. Ekrane apvalinama iki 0,01 mm; skaičiuojama neapvalintais dydžiais.':'Žyma – lentelės viršutinis kraštas. Kiekvieną žymą matuokite žemyn nuo to paties nulio viršuje. Ekrane apvalinama iki 0,01 mm; skaičiuojama neapvalintais dydžiais.';
   $('diagramHint').textContent=vertical?'Vaizdas iš viršaus. Eilės atskirtos aiškumui; atstumas tarp tvoros pusių neskaičiuojamas. Persidengimas vertinamas žiūrint statmenai.':'Vaizdas iš priekio. Pusės parodytos greta aiškumui; persidengimas vertinamas žiūrint statmenai.';
-  $('edgeNote').textContent=vertical?'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su kairiu ir dešiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.':bottomMode==='gap'?'Pirma lentelė pradedama nuo viršutinio angos krašto, o po paskutine lentele paliekamas nurodytas tarpas apačioje. Antroje pusėje lentelės dedamos per tarpų vidurį.':'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su viršutiniu ir apatiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.';
-  $('bottomGapField').hidden=bottomMode!=='gap';
+  $('edgeNote').textContent=vertical?'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su kairiu ir dešiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.':bottomMode==='gap'?'Pirma lentelė pradedama nuo viršutinio angos krašto. Tarpas po paskutine lentele automatiškai paliekamas toks pats kaip tarp visų pirmos pusės lentelių.':'Kai telpa bent dvi lentelės, pirma ir paskutinė pirmos pusės lentelės sutampa su viršutiniu ir apatiniu angos kraštais. Antroje pusėje lentelės dedamos per tarpų vidurį, todėl jų viena mažiau.';
+  $('bottomGapField').hidden=bottomMode!=='gap'||!vertical;
   $('bottomGapHint').textContent=vertical?'Tarpas atimamas iš angos aukščio – rezultate matysite reikalingą lentelės ilgį.':'Tarpas atimamas iš dengiamo angos aukščio ir įtraukiamas į montavimo žymas.';
   $('overlapField').hidden=mode!=='auto'||sides!==2;$('gapField').hidden=mode!=='auto'||sides!==1;$('countField').hidden=mode!=='manual';
   $('selectionHint').textContent=mode==='manual'?'Žingsnis perskaičiuojamas pagal jūsų įvestą pirmos pusės kiekį.':'Automatinis kiekis parenkamas pagal artimiausią galimą '+(sides===2?'persidengimą.':'tarpą.')+' Faktinį matmenį matysite rezultate.';
@@ -116,9 +116,10 @@ function update(){
     const openingHeight=vertical?number('height'):openingLength;
     if(!Number.isFinite(requestedBottomGap)||requestedBottomGap<0)throw Error('Įveskite teigiamą tarpą apačioje arba 0.');
     if(!Number.isFinite(openingHeight)||openingHeight<=0)throw Error('Įveskite teigiamą angos aukštį.');
-    if(requestedBottomGap>=openingHeight)throw Error('Tarpas apačioje turi būti mažesnis už angos aukštį.');
-    const r=calculateFence({length:vertical?openingLength:openingLength-requestedBottomGap,width:number('width'),sides,mode,targetOverlap:number('targetOverlap'),targetGap:number('targetGap'),count:number('count')});
-    r.openingLength=openingLength;r.openingHeight=openingHeight;r.bottomGap=requestedBottomGap;r.boardLength=vertical?openingHeight-requestedBottomGap:null;
+    if(vertical&&requestedBottomGap>=openingHeight)throw Error('Tarpas apačioje turi būti mažesnis už angos aukštį.');
+    const trailingGap=!vertical&&bottomMode==='gap';
+    const r=calculateFence({length:openingLength,width:number('width'),sides,mode,targetOverlap:number('targetOverlap'),targetGap:number('targetGap'),count:number('count'),trailingGap});
+    r.openingLength=openingLength;r.openingHeight=openingHeight;r.bottomGap=vertical?requestedBottomGap:(trailingGap?r.gap:0);r.boardLength=vertical?openingHeight-requestedBottomGap:null;
     current=r;
     $('error').hidden=true;$('drawing').hidden=false;$('copy').disabled=false;$('print').disabled=false;
     $('total').textContent=r.total;$('split').textContent='Pirma pusė: '+r.n+' vnt.'+(sides===2?' · Antra pusė: '+r.backN+' vnt.':'');
