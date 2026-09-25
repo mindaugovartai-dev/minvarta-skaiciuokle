@@ -204,7 +204,7 @@
             </section>
             <section class="extras-group" aria-labelledby="installationExtrasTitle">
               <h3 id="installationExtrasTitle">Montavimo darbai</h3>
-              <label id="foundationRow" class="check"><input id="foundation" type="checkbox"><span class="extra-heading"><span>Vartų pamatas</span><span class="extra-price">350 €</span></span></label>
+              <label id="foundationRow" class="check"><input id="foundation" type="checkbox"><span class="extra-heading"><span>Vartų pamatas</span><span class="extra-price">370 €</span></span></label>
               <div class="extra-item">
                 <div class="extra-heading"><label for="cable">Kabelio įrengimas</label><span class="extra-price">15 €/m</span></div>
 
@@ -471,7 +471,7 @@
 
       if(e.wifiController.checked){ total+=60; rows.push(['Wi‑Fi vartų valdiklis',60]); }
 
-      if(e.foundation.checked&&ng){ total+=350; rows.push(['Vartų pamatas',350]); }
+      if(e.foundation.checked&&ng){ total+=370; rows.push(['Vartų pamatas',370]); }
 
       const p60=Math.max(0,Math.floor(num(e.posts60,0)));
       if(p60){ total+=p60*45; rows.push([`60×40 mm stulpai su betonavimu × ${p60}`,p60*45]); }
