@@ -594,8 +594,9 @@
       e.sendLead.textContent='Siunčiama…';
 
       try{
+        const senderName=e.leadName.value.trim().replace(/\s+/g,' ').slice(0,80);
         const formPayload={
-          _subject:'Nauja užklausa iš Minvarta kainos skaičiuoklės',
+          _subject:`${senderName} · Nauja užklausa iš Minvarta kainos skaičiuoklės`,
           _template:'table',
           Vardas:e.leadName.value.trim(),
           Telefonas:e.leadPhone.value.trim(),
