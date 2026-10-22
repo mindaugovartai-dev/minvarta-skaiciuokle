@@ -113,15 +113,11 @@
         <section class="card">
           <h2>Pasirinkite komplektaciją</h2>
           <p class="hint" style="margin-top:-4px;margin-bottom:12px">Pasirink reikiamą komplektaciją</p>
-          <label class="check"><input id="needGate" type="checkbox" checked><span><b>Vartai</b> – pasirinkite tipą ir įveskite matmenis</span></label>
-          <label id="gateTypeRow">Vartų tipas
-            <select id="gateType">
-              <option value="sliding">Slenkami vartai</option>
-              <option value="swing">Varstomi vartai</option>
-            </select>
-          </label>
+          <label class="check"><input id="needGate" type="checkbox" checked><span><b>Slenkami vartai</b> – 1 200 € su montavimu, be užpildo</span></label>
+          <label class="check"><input id="needSwingGate" type="checkbox"><span><b>Varstomi vartai</b> – 700 € su montavimu, be užpildo</span></label>
           <label class="check"><input id="needWicket" type="checkbox" checked><span><b>Varteliai</b> – 200 € su montavimu</span></label>
-          <label class="check"><input id="needAuto" type="checkbox" checked><span id="autoLabel"><b>Automatika</b> – 500 € su montavimu</span></label>
+          <label id="slidingAutoRow" class="check"><input id="needAuto" type="checkbox" checked><span><b>Slenkamų vartų automatika</b> – 500 € su montavimu</span></label>
+          <label id="swingAutoRow" class="check hidden"><input id="needSwingAuto" type="checkbox"><span><b>Varstomų vartų automatika</b> – 700 € su montavimu</span></label>
           <div id="kitNote" class="note"><b>Pilnas bazinis komplektas – 1 900 €.</b> Automatika apima foto daviklius ir 2 pultelius.</div>
         </section>
 
@@ -146,7 +142,7 @@
         </section>
 
         <section id="gateSection" class="card">
-          <h2>Vartai</h2>
+          <h2>Slenkami vartai</h2>
           <div class="row">
             <label>Pravažiavimas, mm
               <input id="gateWidth" type="text" inputmode="numeric" autocomplete="off" required>
@@ -156,7 +152,7 @@
             </label>
           </div>
           <div id="gateError" class="error hidden"></div>
-          <p id="gateHint" class="hint">Iki 5 000 mm kaina nemažėja. Virš 5 000 mm kiekvieni pridėti 200 mm: +100 €. Aukščiausias gaminamas aukštis – 1 800 mm.</p>
+          <p class="hint">Iki 5 000 mm kaina nemažėja. Virš 5 000 mm kiekvieni pridėti 200 mm: +100 €. Aukščiausias gaminamas aukštis – 1 800 mm.</p>
 
           <label style="margin-top:12px">Vartų užpildas (kaina su montavimo darbais)
             <select id="gateFill">
@@ -168,6 +164,31 @@
           </label>
           <div class="note"><b>Užpildo kaina skaičiuojama su montavimo darbais.</b><br><span id="verticalGateNote" class="hidden">Pasirinkus vertikalų užpildą prie vartų konstruktyvo pridedama <b>100 €</b>.</span></div>
           <div id="gateFillInfo" class="hint"></div>
+        </section>
+
+        <section id="swingGateSection" class="card">
+          <h2>Varstomi vartai</h2>
+          <div class="row">
+            <label>Pravažiavimas, mm
+              <input id="swingGateWidth" type="text" inputmode="numeric" autocomplete="off" required>
+            </label>
+            <label>Aukštis nuo žemės, mm
+              <input id="swingGateHeight" type="text" inputmode="numeric" autocomplete="off" required>
+            </label>
+          </div>
+          <div id="swingGateError" class="error hidden"></div>
+          <p class="hint">Iki 4 000 mm pločio ir 1 800 mm aukščio – 700 € su montavimu, be užpildo.</p>
+
+          <label style="margin-top:12px">Vartų užpildas (kaina su montavimo darbais)
+            <select id="swingGateFill">
+              <option value="none">Be užpildo</option>
+              <option value="vertical1">Vertikali tvoralentė – viena pusė</option>
+              <option value="vertical2">Vertikali tvoralentė – abi pusės</option>
+              <option value="rombo">Rombo – 45 €/m²</option>
+            </select>
+          </label>
+          <div class="note"><b>Užpildo kaina skaičiuojama su montavimo darbais.</b><br><span id="verticalSwingGateNote" class="hidden">Pasirinkus vertikalų užpildą prie vartų konstruktyvo pridedama <b>100 €</b>.</span></div>
+          <div id="swingGateFillInfo" class="hint"></div>
         </section>
 
         <section id="wicketSection" class="card">
@@ -299,12 +320,13 @@
     const root = document.getElementById('app');
     const $ = s => root.querySelector(s);
     const e = {
-      needGate:$('#needGate'), needWicket:$('#needWicket'), needAuto:$('#needAuto'),
-      gateType:$('#gateType'), gateTypeRow:$('#gateTypeRow'), autoLabel:$('#autoLabel'),
-      gateSection:$('#gateSection'), wicketSection:$('#wicketSection'), kitNote:$('#kitNote'), gateHint:$('#gateHint'),
+      needGate:$('#needGate'), needSwingGate:$('#needSwingGate'), needWicket:$('#needWicket'), needAuto:$('#needAuto'), needSwingAuto:$('#needSwingAuto'),
+      gateSection:$('#gateSection'), swingGateSection:$('#swingGateSection'), wicketSection:$('#wicketSection'), kitNote:$('#kitNote'), slidingAutoRow:$('#slidingAutoRow'), swingAutoRow:$('#swingAutoRow'),
       colorSection:$('#colorSection'), ralColor:$('#ralColor'), customRal:$('#customRal'), customRalRow:$('#customRalRow'),
       gateWidth:$('#gateWidth'), gateHeight:$('#gateHeight'), gateFill:$('#gateFill'),
       gateFillInfo:$('#gateFillInfo'), gateError:$('#gateError'), verticalGateNote:$('#verticalGateNote'),
+      swingGateWidth:$('#swingGateWidth'), swingGateHeight:$('#swingGateHeight'), swingGateFill:$('#swingGateFill'),
+      swingGateFillInfo:$('#swingGateFillInfo'), swingGateError:$('#swingGateError'), verticalSwingGateNote:$('#verticalSwingGateNote'),
       wicketWidth:$('#wicketWidth'), wicketHeight:$('#wicketHeight'), wicketFill:$('#wicketFill'),
       wicketFillInfo:$('#wicketFillInfo'), wicketError:$('#wicketError'),
       foundation:$('#foundation'), foundationRow:$('#foundationRow'), posts:$('#posts'), posts60:$('#posts60'),
@@ -327,11 +349,6 @@
       const v = parse(el.value);
       return v === null ? fallback : v;
     };
-
-    const gateTypeName = () => e.gateType.value==='swing' ? 'Varstomi vartai' : 'Slenkami vartai';
-    const automationName = () => e.needGate.checked && e.gateType.value==='swing'
-      ? 'Varstomų vartų automatika + foto davikliai + 2 pulteliai'
-      : 'Automatika + foto davikliai + 2 pulteliai';
 
     function chooseBoards(width,minGap,maxGap,target){
       let best = null;
@@ -383,28 +400,22 @@
     }
 
     function calculate(){
-      [e.gateHeight,e.wicketHeight].forEach(el=>{
+      [e.gateHeight,e.swingGateHeight,e.wicketHeight].forEach(el=>{
         if(parse(el.value)>1800) el.value='1800';
       });
-      const ng=e.needGate.checked, nw=e.needWicket.checked, na=e.needAuto.checked;
-      const isSwing=e.gateType.value==='swing';
-      const gateName=gateTypeName();
-      const gateNameGenitive=isSwing ? 'varstomų vartų' : 'slenkamų vartų';
-      const hasColorProduct = ng || nw;
+      const ng=e.needGate.checked, nsg=e.needSwingGate.checked, nw=e.needWicket.checked, na=e.needAuto.checked, nsa=e.needSwingAuto.checked;
+      const hasColorProduct = ng || nsg || nw;
 
       e.colorSection.classList.toggle('hidden', !hasColorProduct);
       e.customRalRow.classList.toggle('hidden', !hasColorProduct || e.ralColor.value!=='custom');
       e.gateSection.classList.toggle('hidden',!ng);
-      e.gateTypeRow.classList.toggle('hidden',!ng);
+      e.swingGateSection.classList.toggle('hidden',!nsg);
       e.wicketSection.classList.toggle('hidden',!nw);
-      e.foundationRow.classList.toggle('hidden',!ng);
-      e.remoteRow.classList.toggle('hidden',!na);
-      e.kitNote.classList.toggle('hidden',!(ng&&nw&&na));
-      e.kitNote.innerHTML=`<b>Pilnas bazinis komplektas – ${isSwing ? '1 600' : '1 900'} €.</b> Automatika apima foto daviklius ir 2 pultelius.`;
-      e.autoLabel.innerHTML=isSwing ? '<b>Varstomų vartų automatika</b> – 700 € su montavimu' : '<b>Automatika</b> – 500 € su montavimu';
-      e.gateHint.textContent=isSwing
-        ? 'Iki 4 000 mm pločio ir 1 800 mm aukščio – 700 € su montavimu, be užpildo.'
-        : 'Iki 5 000 mm kaina nemažėja. Virš 5 000 mm kiekvieni pridėti 200 mm: +100 €. Aukščiausias gaminamas aukštis – 1 800 mm.';
+      e.foundationRow.classList.toggle('hidden',!(ng||nsg));
+      e.slidingAutoRow.classList.toggle('hidden',!ng);
+      e.swingAutoRow.classList.toggle('hidden',!nsg);
+      e.remoteRow.classList.toggle('hidden',!((na&&ng)||(nsa&&nsg)));
+      e.kitNote.classList.toggle('hidden',!(ng&&nw&&na&&!nsg));
 
       if(hasColorProduct){
         e.summaryMeta.classList.remove('hidden');
@@ -419,23 +430,22 @@
 
       if(ng){
         const gw=parse(e.gateWidth.value), gh=parse(e.gateHeight.value);
-        const maxWidth=isSwing ? 4000 : 10000;
-        const okW=gw>=1000&&gw<=maxWidth, okH=gh>=500&&gh<=1800;
+        const okW=gw>=1000&&gw<=10000, okH=gh>=500&&gh<=1800;
         e.gateWidth.required=ng;
         e.gateHeight.required=ng;
-        e.gateWidth.setCustomValidity(okW ? '' : `Įveskite ${gateNameGenitive} plotį nuo 1000 iki ${maxWidth} mm.`);
+        e.gateWidth.setCustomValidity(okW ? '' : 'Įveskite slenkamų vartų plotį nuo 1000 iki 10000 mm.');
         e.gateHeight.setCustomValidity(okH ? '' : 'Įveskite vartų aukštį nuo 500 iki 1800 mm.');
         e.gateError.classList.toggle('hidden',okW&&okH);
-        e.gateError.textContent=okW&&okH?'':`Patikrinkite ${gateNameGenitive} matmenis: plotis 1000–${maxWidth} mm, aukštis 500–1800 mm.`;
+        e.gateError.textContent=okW&&okH?'':'Patikrinkite slenkamų vartų matmenis: plotis 1000–10000 mm, aukštis 500–1800 mm.';
         const isVertical=e.gateFill.value.startsWith('vertical');
         e.verticalGateNote.classList.toggle('hidden',!isVertical);
 
         if(okW&&okH){
-          const widthExtra = !isSwing && gw>5000 ? Math.ceil((gw-5000)/200)*100 : 0;
+          const widthExtra = gw>5000 ? Math.ceil((gw-5000)/200)*100 : 0;
           const construction = isVertical ? 100 : 0;
-          const gatePrice = (isSwing ? 700 : 1200) + widthExtra + construction;
+          const gatePrice = 1200 + widthExtra + construction;
           total += gatePrice;
-          rows.push([gateName+' su montavimu'+(isVertical?' (įsk. +100 € konstruktyvui)':''), gatePrice]);
+          rows.push(['Slenkami vartai su montavimu'+(isVertical?' (įsk. +100 € konstruktyvui)':''), gatePrice]);
 
           const fw=gw+120, fh=gh-180;
           let info='';
@@ -457,6 +467,45 @@
         e.gateWidth.setCustomValidity('');
         e.gateHeight.setCustomValidity('');
         e.gateFillInfo.textContent='';
+      }
+
+      if(nsg){
+        const gw=parse(e.swingGateWidth.value), gh=parse(e.swingGateHeight.value);
+        const okW=gw>=1000&&gw<=4000, okH=gh>=500&&gh<=1800;
+        e.swingGateWidth.required=nsg;
+        e.swingGateHeight.required=nsg;
+        e.swingGateWidth.setCustomValidity(okW ? '' : 'Įveskite varstomų vartų plotį nuo 1000 iki 4000 mm.');
+        e.swingGateHeight.setCustomValidity(okH ? '' : 'Įveskite varstomų vartų aukštį nuo 500 iki 1800 mm.');
+        e.swingGateError.classList.toggle('hidden',okW&&okH);
+        e.swingGateError.textContent=okW&&okH?'':'Patikrinkite varstomų vartų matmenis: plotis 1000–4000 mm, aukštis 500–1800 mm.';
+        const isVertical=e.swingGateFill.value.startsWith('vertical');
+        e.verticalSwingGateNote.classList.toggle('hidden',!isVertical);
+
+        if(okW&&okH){
+          const construction=isVertical ? 100 : 0;
+          const gatePrice=700+construction;
+          total+=gatePrice;
+          rows.push(['Varstomi vartai su montavimu'+(isVertical?' (įsk. +100 € konstruktyvui)':''),gatePrice]);
+          const fw=gw+120, fh=gh-180;
+          let info='';
+          if(isVertical){
+            const sides=e.swingGateFill.value==='vertical2'?2:1;
+            const f=vertical(fw,fh,'gate',sides);
+            verticalCost+=f.cost; verticalQty+=f.qty; total+=f.cost;
+            info=`Užpildo laukas: ${(fw/1000).toFixed(2)} × ${(fh/1000).toFixed(2)} m. ${f.perSide} lentelės vienai pusei, tarpas ~${f.gap.toFixed(1)} mm.`;
+          } else if(e.swingGateFill.value==='rombo'){
+            const area=fw/1000*fh/1000, cost=area*45;
+            romboArea+=area; romboCost+=cost; total+=cost;
+            info=`Užpildo plotas: ${area.toFixed(3)} m².`;
+          }
+          e.swingGateFillInfo.textContent=info;
+        }
+      } else {
+        e.swingGateWidth.required=false;
+        e.swingGateHeight.required=false;
+        e.swingGateWidth.setCustomValidity('');
+        e.swingGateHeight.setCustomValidity('');
+        e.swingGateFillInfo.textContent='';
       }
 
       if(nw){
@@ -500,17 +549,18 @@
       if(verticalQty) rows.push([`Vertikalus užpildas su montavimu · ${verticalQty} vnt.`, verticalCost]);
       if(romboArea) rows.push([`Rombo užpildas su montavimu · ${romboArea.toFixed(3)} m²`, romboCost]);
 
-      if(na){
-        const automationPrice=ng&&isSwing ? 700 : 500;
-        total+=automationPrice;
-        rows.push([automationName(),automationPrice]);
+      if(na&&ng){
+        total+=500;
+        rows.push(['Slenkamų vartų automatika + foto davikliai + 2 pulteliai',500]);
         const r=Math.max(0,Math.floor(num(e.extraRemotes,0)));
         if(r){ total+=r*30; rows.push([`Papildomi pulteliai × ${r}`,r*30]); }
       }
 
+      if(nsa&&nsg){ total+=700; rows.push(['Varstomų vartų automatika + foto davikliai + 2 pulteliai',700]); }
+
       if(e.wifiController.checked){ total+=60; rows.push(['Wi‑Fi vartų valdiklis',60]); }
 
-      if(e.foundation.checked&&ng){ total+=370; rows.push(['Vartų pamatas',370]); }
+      if(e.foundation.checked&&(ng||nsg)){ total+=370; rows.push(['Vartų pamatas',370]); }
 
       const p60=Math.max(0,Math.floor(num(e.posts60,0)));
       if(p60){ total+=p60*45; rows.push([`60×40 mm stulpai su betonavimu × ${p60}`,p60*45]); }
@@ -545,15 +595,24 @@
       };
       const payload={};
 
-      if(e.needGate.checked || e.needWicket.checked) payload.Spalva=state.color;
+      if(e.needGate.checked || e.needSwingGate.checked || e.needWicket.checked) payload.Spalva=state.color;
 
       if(e.needGate.checked){
-        let v=`${gateTypeName()} · ${e.gateWidth.value} × ${e.gateHeight.value} mm`;
+        let v=`${e.gateWidth.value} × ${e.gateHeight.value} mm`;
         const fill=fillLabel(e.gateFill);
         if(fill && fill!=='Be užpildo') v+=` · ${fill}`;
-        const price=rowPrice(gateTypeName()+' su montavimu');
+        const price=rowPrice('Slenkami vartai su montavimu');
         if(price) v+=` · ${price}`;
-        payload.Vartai=v;
+        payload.Slenkami_vartai=v;
+      }
+
+      if(e.needSwingGate.checked){
+        let v=`${e.swingGateWidth.value} × ${e.swingGateHeight.value} mm`;
+        const fill=fillLabel(e.swingGateFill);
+        if(fill && fill!=='Be užpildo') v+=` · ${fill}`;
+        const price=rowPrice('Varstomi vartai su montavimu');
+        if(price) v+=` · ${price}`;
+        payload.Varstomi_vartai=v;
       }
 
       if(e.needWicket.checked){
@@ -570,17 +629,20 @@
       const rombo=state.rows.find(x=>String(x[0]).startsWith('Rombo užpildas'));
       if(rombo) payload.Rombo_uzpildas=`${rombo[0].replace('Rombo užpildas su montavimu · ','')} · ${eur(rombo[1])}`;
 
-      if(e.needAuto.checked){
-        const autoName=automationName();
-        const price=rowPrice(autoName);
-        payload.Automatika=`${autoName}${price ? ' · '+price : ''}`;
+      if(e.needAuto.checked && e.needGate.checked){
+        const price=rowPrice('Slenkamų vartų automatika');
+        payload.Slenkamu_vartu_automatika=`Foto davikliai + 2 pulteliai${price ? ' · '+price : ''}`;
+      }
+      if(e.needSwingAuto.checked && e.needSwingGate.checked){
+        const price=rowPrice('Varstomų vartų automatika');
+        payload.Varstomu_vartu_automatika=`Foto davikliai + 2 pulteliai${price ? ' · '+price : ''}`;
       }
 
       if(e.wifiController.checked){
         payload['Wi‑Fi vartų valdiklis']=rowPrice('Wi‑Fi vartų valdiklis');
       }
 
-      if(e.foundation.checked && e.needGate.checked){
+      if(e.foundation.checked && (e.needGate.checked || e.needSwingGate.checked)){
         const price=rowPrice('Vartų pamatas');
         payload.Vartu_pamatas=price || 'Taip';
       }
@@ -624,6 +686,7 @@
       calculate();
       const fields=[];
       if(e.needGate.checked) fields.push(e.gateWidth,e.gateHeight);
+      if(e.needSwingGate.checked) fields.push(e.swingGateWidth,e.swingGateHeight);
       if(e.needWicket.checked) fields.push(e.wicketWidth,e.wicketHeight);
       const invalid=fields.find(el=>!el.checkValidity());
       if(!invalid) return true;
