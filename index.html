@@ -53,7 +53,7 @@
     .hint{font-size:12px;line-height:1.6;color:var(--muted);margin:8px 0 0;font-weight:400}
     .note{background:var(--accent-soft);border-left:3px solid #748985;border-radius:0 8px 8px 0;padding:13px 15px;font-size:13px;margin-top:16px;color:#47545a}
     .hidden{display:none!important}
-    .summary{position:sticky;top:24px;background:#30393e;border-color:#30393e;color:#fff;padding:28px;box-shadow:0 12px 30px #25303612}
+    .summary{position:static;margin-top:24px;background:#30393e;border-color:#30393e;color:#fff;padding:28px;box-shadow:0 12px 30px #25303612}
     .total-label{font-size:12px;color:#c9d2d5;letter-spacing:.1em;text-transform:uppercase}
     .total{font-size:clamp(30px,3vw,40px);font-weight:650;letter-spacing:-.045em;line-height:1.25;margin:12px 0 20px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
     .meta{font-size:12px;font-weight:500;margin-bottom:18px;color:#d3dcdf;padding:9px 12px;background:#ffffff0a;border-radius:6px}
@@ -143,10 +143,10 @@
           <h2>Slenkantys vartai</h2>
           <div class="row">
             <label>Pravažiavimas, mm
-              <input id="gateWidth" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="gateWidth" type="text" inputmode="numeric" autocomplete="off" required>
             </label>
             <label>Aukštis nuo žemės, mm
-              <input id="gateHeight" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="gateHeight" type="text" inputmode="numeric" autocomplete="off" required>
             </label>
           </div>
           <div id="gateError" class="error hidden"></div>
@@ -168,10 +168,10 @@
           <h2>Varteliai</h2>
           <div class="row">
             <label>Plotis, mm
-              <input id="wicketWidth" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="wicketWidth" type="text" inputmode="numeric" autocomplete="off" required>
             </label>
             <label>Aukštis nuo žemės, mm
-              <input id="wicketHeight" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="wicketHeight" type="text" inputmode="numeric" autocomplete="off" required>
             </label>
           </div>
           <div id="wicketError" class="error hidden"></div>
@@ -268,16 +268,16 @@
           </form>
         </section>
       </div>
+    </div>
 
-      <aside class="card summary">
+    <aside class="card summary">
         <div class="total-label">Preliminari kaina</div>
         <div id="grandTotal" class="total" aria-live="polite">1 900,00 €</div>
         <div id="summaryMeta" class="meta"></div>
         <div id="breakdown"></div>
         <div class="divider"></div>
         <div class="foot">Galutinė kaina patvirtinama įvertinus faktinius matmenis ir montavimo vietą.</div>
-      </aside>
-    </div>
+    </aside>
     <button class="privacy-settings" id="cookieSettings" type="button">Slapukų nustatymai</button>
     <section class="cookie-panel hidden" id="cookiePanel" aria-labelledby="cookieTitle">
       <h2 id="cookieTitle">Reklamos slapukai</h2>
@@ -592,6 +592,18 @@
       return {state,payload};
     }
 
+    function validateDimensions(){
+      calculate();
+      const fields=[];
+      if(e.needGate.checked) fields.push(e.gateWidth,e.gateHeight);
+      if(e.needWicket.checked) fields.push(e.wicketWidth,e.wicketHeight);
+      const invalid=fields.find(el=>!el.checkValidity());
+      if(!invalid) return true;
+      invalid.reportValidity();
+      invalid.focus();
+      return false;
+    }
+
     e.leadAddress.addEventListener('input', ()=>{
       e.leadAddress.setCustomValidity('');
     });
@@ -600,6 +612,7 @@
       ev.preventDefault();
       e.formStatus.textContent='';
       e.formStatus.className='form-status';
+      if(!validateDimensions()) return;
       e.leadAddress.value=e.leadAddress.value.trim();
       e.leadAddress.setCustomValidity(e.leadAddress.value ? '' : 'Įveskite objekto adresą.');
       if(!e.leadForm.reportValidity()) return;
