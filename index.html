@@ -143,10 +143,10 @@
           <h2>Slenkantys vartai</h2>
           <div class="row">
             <label>Pravažiavimas, mm
-              <input id="gateWidth" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="gateWidth" type="text" inputmode="numeric" value="5000" autocomplete="off">
             </label>
             <label>Aukštis nuo žemės, mm
-              <input id="gateHeight" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="gateHeight" type="text" inputmode="numeric" value="1800" autocomplete="off">
             </label>
           </div>
           <div id="gateError" class="error hidden"></div>
@@ -168,10 +168,10 @@
           <h2>Varteliai</h2>
           <div class="row">
             <label>Plotis, mm
-              <input id="wicketWidth" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="wicketWidth" type="text" inputmode="numeric" value="1100" autocomplete="off">
             </label>
             <label>Aukštis nuo žemės, mm
-              <input id="wicketHeight" type="text" inputmode="numeric" autocomplete="off" form="leadForm" required>
+              <input id="wicketHeight" type="text" inputmode="numeric" value="1800" autocomplete="off">
             </label>
           </div>
           <div id="wicketError" class="error hidden"></div>
@@ -228,7 +228,7 @@
         </section>
 
         <section class="card" id="contactSection">
-          <h2>Siųsti užklausą</h2>
+          <h2>Gauti pasiūlymą</h2>
           <p class="hint" style="margin-top:-4px;margin-bottom:12px">Palikite kontaktus – susisieksime su jumis ir pateiksime pasiūlymą pagal pasirinktą komplektaciją.</p>
           <form id="leadForm">
             <div class="contact-grid">
@@ -397,12 +397,8 @@
       let verticalCost=0, verticalQty=0, romboCost=0, romboArea=0;
 
       if(ng){
-        const gw=parse(e.gateWidth.value), gh=parse(e.gateHeight.value);
+        const gw=num(e.gateWidth,5000), gh=num(e.gateHeight,1800);
         const okW=gw>=1000&&gw<=10000, okH=gh>=500&&gh<=1800;
-        e.gateWidth.required=ng;
-        e.gateHeight.required=ng;
-        e.gateWidth.setCustomValidity(okW ? '' : 'Įveskite vartų plotį nuo 1000 iki 10000 mm.');
-        e.gateHeight.setCustomValidity(okH ? '' : 'Įveskite vartų aukštį nuo 500 iki 1800 mm.');
         e.gateError.classList.toggle('hidden',okW&&okH);
         e.gateError.textContent=okW&&okH?'':'Patikrinkite vartų matmenis: plotis 1000–10000 mm, aukštis 500–1800 mm.';
         const isVertical=e.gateFill.value.startsWith('vertical');
@@ -430,20 +426,12 @@
           e.gateFillInfo.textContent=info;
         }
       } else {
-        e.gateWidth.required=false;
-        e.gateHeight.required=false;
-        e.gateWidth.setCustomValidity('');
-        e.gateHeight.setCustomValidity('');
         e.gateFillInfo.textContent='';
       }
 
       if(nw){
-        const ww=parse(e.wicketWidth.value), wh=parse(e.wicketHeight.value);
+        const ww=num(e.wicketWidth,1100), wh=num(e.wicketHeight,1800);
         const okW=ww>=700&&ww<=2500, okH=wh>=500&&wh<=1800;
-        e.wicketWidth.required=nw;
-        e.wicketHeight.required=nw;
-        e.wicketWidth.setCustomValidity(okW ? '' : 'Įveskite vartelių plotį nuo 700 iki 2500 mm.');
-        e.wicketHeight.setCustomValidity(okH ? '' : 'Įveskite vartelių aukštį nuo 500 iki 1800 mm.');
         e.wicketError.classList.toggle('hidden',okW&&okH);
         e.wicketError.textContent=okW&&okH?'':'Patikrinkite vartelių matmenis: plotis 700–2500 mm, aukštis 500–1800 mm.';
 
@@ -468,10 +456,6 @@
           e.wicketFillInfo.textContent=info;
         }
       } else {
-        e.wicketWidth.required=false;
-        e.wicketHeight.required=false;
-        e.wicketWidth.setCustomValidity('');
-        e.wicketHeight.setCustomValidity('');
         e.wicketFillInfo.textContent='';
       }
 
